@@ -1,8 +1,9 @@
 package moulin.modele;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
-public class Board {
+public class Board extends Observable{
     private int activePlayer; //0 = white ; 1 = black
     private Plateau plateau;
     public int nbTokenWhiteLeftOnBoard;
@@ -18,7 +19,7 @@ public class Board {
         nbTokenWhiteLeftOnBoard = 0;
         plateau = Plateau.getInstance();
         activePlayer = 0;
-        position = new String[23];
+        position = new String[24];
         for (int i = 0; i < 24; i++){
             position[i] = "E";
         }
@@ -69,6 +70,12 @@ public class Board {
             }
             activePlayer = 0;
         }
+        maj();
+    }
+
+    private void maj() {
+        setChanged();
+        notifyObservers();
     }
 
     public void evaluate(){
@@ -80,17 +87,14 @@ public class Board {
     }
 
     public boolean isGameOver(){
-        if (currentPlayer() == 0){
-            if (nbTokenBlackLeftOnBoard + nbTokenBlackLeftToPlay <= 2){
-                return true;
-            }
-        }
-        if (currentPlayer() == 1){
-            if (nbTokenWhiteLeftOnBoard + nbTokenWhiteLeftToPlay <= 2){
-                return true;
-            }
+        if ((nbTokenWhiteLeftOnBoard + nbTokenWhiteLeftToPlay <= 2) || (nbTokenBlackLeftOnBoard + nbTokenBlackLeftToPlay <= 2)) {
+            return true;
         }
         return false;
+    }
+
+    public String[] getPosition() {
+        return position;
     }
 }
 
