@@ -159,7 +159,7 @@ public class BoardControler implements Observer {
                     move.setAddPiece(caseJouee);
 
                     // TODO: tester si il a trois jetons aligné
-                    if (board.isMoulinFromMove(caseJouee)){
+                    if (board.isMoulinFromMove(caseJouee, move.getDelPiece())){
                         for (int i = 0; i < 24; i++){
                             switch (board.getPosition()[i]){
                                 case "B":{

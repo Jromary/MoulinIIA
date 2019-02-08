@@ -15,8 +15,8 @@ public class Board extends Observable{
     private String[] position;
 
     public Board(){
-        nbTokenWhiteLeftToPlay = 3;
-        nbTokenBlackLeftToPlay = 3;
+        nbTokenWhiteLeftToPlay = 9;
+        nbTokenBlackLeftToPlay = 9;
         nbTokenBlackLeftOnBoard = 0;
         nbTokenWhiteLeftOnBoard = 0;
         plateau = Plateau.getInstance();
@@ -118,16 +118,21 @@ public class Board extends Observable{
         return false;
     }
 
-    public boolean isMoulinFromMove(int caseJoue){
-        //System.out.println(caseJoue);
+    public boolean isMoulinFromMove(int caseJoue, int caseFrom){
         for (int[] moulin : plateau.lesMoulin) {
             if (moulin[0] == caseJoue){
                 if (currentPlayer() == 0){
                     if(position[moulin[0]].equals("E") && position[moulin[1]].equals("W") && position[moulin[2]].equals("W")){
+                        if (moulin[1] == caseFrom || moulin[2] == caseFrom){
+                            return false;
+                        }
                         return true;
                     }
                 }else{
                     if (position[moulin[0]].equals("E") && position[moulin[1]].equals("B") && position[moulin[2]].equals("B")){
+                        if (moulin[1] == caseFrom || moulin[2] == caseFrom){
+                            return false;
+                        }
                         return true;
                     }
                 }
@@ -135,10 +140,16 @@ public class Board extends Observable{
             if (moulin[1] == caseJoue) {
                 if (currentPlayer() == 0){
                     if(position[moulin[0]].equals("W") && position[moulin[1]].equals("E") && position[moulin[2]].equals("W")){
+                        if (moulin[0] == caseFrom || moulin[2] == caseFrom){
+                            return false;
+                        }
                         return true;
                     }
                 }else{
                     if (position[moulin[0]].equals("B") && position[moulin[1]].equals("E") && position[moulin[2]].equals("B")){
+                        if (moulin[0] == caseFrom || moulin[2] == caseFrom){
+                            return false;
+                        }
                         return true;
                     }
                 }
@@ -146,15 +157,20 @@ public class Board extends Observable{
             if(moulin[2] == caseJoue) {
                 if (currentPlayer() == 0){
                     if(position[moulin[0]].equals("W") && position[moulin[1]].equals("W") && position[moulin[2]].equals("E")){
+                        if (moulin[1] == caseFrom || moulin[0] == caseFrom){
+                            return false;
+                        }
                         return true;
                     }
                 }else{
                     if (position[moulin[0]].equals("B") && position[moulin[1]].equals("B") && position[moulin[2]].equals("E")){
+                        if (moulin[1] == caseFrom || moulin[0] == caseFrom){
+                            return false;
+                        }
                         return true;
                     }
                 }
             }
-
         }
 
         return false;
