@@ -1,5 +1,7 @@
 package moulin.modele;
 
+import moulin.modele.graph.Connection;
+
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -13,8 +15,8 @@ public class Board extends Observable{
     private String[] position;
 
     public Board(){
-        nbTokenWhiteLeftToPlay = 9;
-        nbTokenBlackLeftToPlay = 9;
+        nbTokenWhiteLeftToPlay = 3;
+        nbTokenBlackLeftToPlay = 3;
         nbTokenBlackLeftOnBoard = 0;
         nbTokenWhiteLeftOnBoard = 0;
         plateau = Plateau.getInstance();
@@ -49,6 +51,9 @@ public class Board extends Observable{
             position[move.getAddPiece()] = "W";
             if (move.getDelPiece() == -1){
                 nbTokenWhiteLeftOnBoard++;
+                if (nbTokenWhiteLeftToPlay > 0){
+                    nbTokenWhiteLeftToPlay--;
+                }
             }else{
                 position[move.getDelPiece()] = "E";
             }
@@ -61,6 +66,9 @@ public class Board extends Observable{
             position[move.getAddPiece()] = "B";
             if (move.getDelPiece() == -1){
                 nbTokenBlackLeftOnBoard++;
+                if (nbTokenBlackLeftToPlay > 0){
+                    nbTokenBlackLeftToPlay--;
+                }
             }else{
                 position[move.getDelPiece()] = "E";
             }
@@ -79,7 +87,7 @@ public class Board extends Observable{
     }
 
     public void evaluate(){
-        
+
     }
 
     public int currentPlayer(){
@@ -95,6 +103,61 @@ public class Board extends Observable{
 
     public String[] getPosition() {
         return position;
+    }
+
+    public boolean caseJouable(int caseABouger, int caseJouee) {
+        if (caseABouger == -1){
+            return true;
+        }
+        for (Connection c :
+                plateau.plateau.getConnection(caseABouger)) {
+            if (c.getToNode() == caseJouee || c.getFromNode() == caseJouee) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMoulinFromMove(int caseJoue){
+        //System.out.println(caseJoue);
+        for (int[] moulin : plateau.lesMoulin) {
+            if (moulin[0] == caseJoue){
+                if (currentPlayer() == 0){
+                    if(position[moulin[0]].equals("E") && position[moulin[1]].equals("W") && position[moulin[2]].equals("W")){
+                        return true;
+                    }
+                }else{
+                    if (position[moulin[0]].equals("E") && position[moulin[1]].equals("B") && position[moulin[2]].equals("B")){
+                        return true;
+                    }
+                }
+            }
+            if (moulin[1] == caseJoue) {
+                if (currentPlayer() == 0){
+                    if(position[moulin[0]].equals("W") && position[moulin[1]].equals("E") && position[moulin[2]].equals("W")){
+                        return true;
+                    }
+                }else{
+                    if (position[moulin[0]].equals("B") && position[moulin[1]].equals("E") && position[moulin[2]].equals("B")){
+                        return true;
+                    }
+                }
+            }
+            if(moulin[2] == caseJoue) {
+                if (currentPlayer() == 0){
+                    if(position[moulin[0]].equals("W") && position[moulin[1]].equals("W") && position[moulin[2]].equals("E")){
+                        return true;
+                    }
+                }else{
+                    if (position[moulin[0]].equals("B") && position[moulin[1]].equals("B") && position[moulin[2]].equals("E")){
+                        return true;
+                    }
+                }
+            }
+
+        }
+
+        return false;
     }
 }
 

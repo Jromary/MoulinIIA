@@ -14,7 +14,7 @@ public class Graph {
     public ArrayList<Connection> getConnection(int node){
         ArrayList<Connection> close = new ArrayList<>();
         for (Connection c : edge) {
-            if (c.getFromNode() == node){
+            if (c.getFromNode() == node || c.getToNode() == node){
                 close.add(c);
             }
         }

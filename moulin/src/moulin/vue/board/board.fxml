@@ -5,36 +5,36 @@
 
 <AnchorPane fx:id="boardPane" prefHeight="700.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="moulin.vue.board.BoardControler">
     <children>
-        <Button fx:id="C0" onAction="#test" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C1" layoutX="315.0" layoutY="15.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C2" layoutX="615.0" layoutY="15.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C0" onAction="#play" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C1" onAction="#play" layoutX="315.0" layoutY="15.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C2" onAction="#play" layoutX="615.0" layoutY="15.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
 
-        <Button fx:id="C3" layoutX="115.0" layoutY="115.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C4" layoutX="315.0" layoutY="115.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C5" layoutX="515.0" layoutY="115.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C3" onAction="#play" layoutX="115.0" layoutY="115.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C4" onAction="#play" layoutX="315.0" layoutY="115.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C5" onAction="#play" layoutX="515.0" layoutY="115.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
 
-        <Button fx:id="C6" layoutX="215.0" layoutY="215.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C7" layoutX="315.0" layoutY="215.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C8" layoutX="415.0" layoutY="215.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C6" onAction="#play" layoutX="215.0" layoutY="215.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C7" onAction="#play" layoutX="315.0" layoutY="215.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C8" onAction="#play" layoutX="415.0" layoutY="215.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
 
-        <Button fx:id="C9" layoutX="15.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C10" layoutX="115.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C11" layoutX="215.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C12" layoutX="415.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C13" layoutX="515.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C14" layoutX="615.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C9" onAction="#play" layoutX="15.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C10" onAction="#play" layoutX="115.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C11" onAction="#play" layoutX="215.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C12" onAction="#play" layoutX="415.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C13" onAction="#play" layoutX="515.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C14" onAction="#play" layoutX="615.0" layoutY="315.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
 
-        <Button fx:id="C15" layoutX="215.0" layoutY="415.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C16" layoutX="315.0" layoutY="415.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C17" layoutX="415.0" layoutY="415.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C15" onAction="#play" layoutX="215.0" layoutY="415.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C16" onAction="#play" layoutX="315.0" layoutY="415.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C17" onAction="#play" layoutX="415.0" layoutY="415.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
 
-        <Button fx:id="C18" layoutX="115.0" layoutY="515.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C19" layoutX="315.0" layoutY="515.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C20" layoutX="515.0" layoutY="515.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C18" onAction="#play" layoutX="115.0" layoutY="515.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C19" onAction="#play" layoutX="315.0" layoutY="515.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C20" onAction="#play" layoutX="515.0" layoutY="515.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
 
-        <Button fx:id="C21" layoutX="15.0" layoutY="615.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C22" layoutX="315.0" layoutY="615.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
-        <Button fx:id="C23" layoutX="615.0" layoutY="615.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C21" onAction="#play" layoutX="15.0" layoutY="615.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C22" onAction="#play" layoutX="315.0" layoutY="615.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
+        <Button fx:id="C23" onAction="#play" layoutX="615.0" layoutY="615.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" />
 
     </children>
 </AnchorPane>

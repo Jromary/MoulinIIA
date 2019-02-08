@@ -13,6 +13,18 @@ public class Move {
         this.delPieceE = delPieceE;
     }
 
+    public void setAddPiece(int addPiece) {
+        this.addPiece = addPiece;
+    }
+
+    public void setDelPiece(int delPiece) {
+        this.delPiece = delPiece;
+    }
+
+    public void setDelPieceE(int delPieceE) {
+        this.delPieceE = delPieceE;
+    }
+
     public int getAddPiece() {
         return addPiece;
     }
@@ -23,5 +35,14 @@ public class Move {
 
     public int getDelPieceE() {
         return delPieceE;
+    }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "addPiece=" + addPiece +
+                ", delPiece=" + delPiece +
+                ", delPieceE=" + delPieceE +
+                '}';
     }
 }

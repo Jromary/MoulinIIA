@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import moulin.modele.Board;
-import moulin.modele.graph.Graph;
 import moulin.vue.board.BoardControler;
 
 public class Main extends Application {
