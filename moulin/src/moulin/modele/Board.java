@@ -13,6 +13,7 @@ public class Board extends Observable{
     public int nbTokenWhiteLeftToPlay;
     public int nbTokenBlackLeftToPlay;
     private String[] position;
+    private int joueurOdinateur = 1;
 
     public Board(){
         nbTokenWhiteLeftToPlay = 9;
@@ -29,20 +30,42 @@ public class Board extends Observable{
 
     public ArrayList<Move> getMoves(){
         ArrayList<Move> nextMoves = new ArrayList<>();
-
+        //premiere phase de jeu
         for (int i = 0; i < position.length; i++) {
+            // si on a une case vide alors
             if (position[i].equals("E")){
                 if ((currentPlayer() == 0 && nbTokenWhiteLeftToPlay > 0 ) ||
                         (currentPlayer() == 1 && nbTokenBlackLeftToPlay > 0)){
-                    nextMoves.add(new Move(i,-1,-1));
+                    // si il nous reste des jeton a jouer en temps que joueur
+                    // si on placant un jeton sur cette case on fait un moulin
+                    if (isMoulinFromMove(i,-1)){
+                        //on cherche toutes les case ou il y a une adversaire
+                        for (int j = 0; j < position.length; j++) {
+                            if (currentPlayer() == 1){
+                                if (position[j].equals("W")){
+                                    nextMoves.add(new Move(i,-1,j));
+                                }
+                            }
+                            if (currentPlayer() == 0){
+                                if (position[j].equals("B")){
+                                    nextMoves.add(new Move(i,-1,j));
+                                }
+                            }
+                        }
+                    // si on ne fait pas de moulin on place alors juste le jeton au bon endroit
+                    }else{
+                        nextMoves.add(new Move(i,-1,-1));
+                    }
                 }
             }
         }
-
+        /*
         if ((currentPlayer() == 0 && nbTokenWhiteLeftToPlay > 0 ) ||
                 (currentPlayer() == 1 && nbTokenBlackLeftToPlay > 0)){
-
+            //TODO: next move quand on a fini de placer les pions et qu'on commance a bouger les pins deja sur le jeu
+            //TODO: verifier si on fait un moulin pour elever la piece enemie
         }
+        */
         return nextMoves;
     }
 
@@ -86,8 +109,57 @@ public class Board extends Observable{
         notifyObservers();
     }
 
-    public void evaluate(){
+    public double evaluate(){
+        double alpha = 0.5;
+        double eval = 0;
+        int nbpairAlOrdi = nbPaireAlignee(joueurOdinateur);
+        int nbpairAlNOrdi = nbPaireAlignee(Math.abs(joueurOdinateur - 1));
+        System.out.println("nbpair ordi : " + nbpairAlOrdi);
+        System.out.println("nbpair Nordi : " + nbpairAlNOrdi);
+        System.out.println("nbRDM ordi : " + nbJetonNonAllignee(joueurOdinateur));
+        System.out.println("nbRDM Nordi : " + nbJetonNonAllignee(Math.abs(joueurOdinateur - 1)));
+        eval = nbpairAlOrdi - nbpairAlNOrdi + alpha * (nbJetonNonAllignee(joueurOdinateur) - nbJetonNonAllignee(Math.abs(joueurOdinateur - 1)));
+        return eval;
+    }
 
+    private int nbPaireAlignee(int joueur){
+        int nb = 0;
+        String test;
+        if (joueur == 1){
+            test = "B";
+        }else{
+            test = "W";
+        }
+        for (int[] moulin : plateau.lesMoulin) {
+            if (position[moulin[0]].equals(test)){
+                if (position[moulin[1]].equals(test)){
+                    nb++;
+                }else{
+                    if (position[moulin[2]].equals(test)){
+                        nb++;
+                    }
+                }
+            }else{
+                if (position[moulin[1]].equals(test)){
+                    if (position[moulin[2]].equals(test)){
+                        nb++;
+                    }
+                }
+            }
+        }
+        return nb;
+    }
+
+    private int nbJetonNonAllignee(int joueur){
+        return Math.max( nbJetonPlacee(joueur) - nbPaireAlignee(joueur), 0);
+    }
+
+    private int nbJetonPlacee(int joueur){
+        if (joueur == 1){
+            return nbTokenBlackLeftOnBoard;
+        }else {
+            return nbTokenWhiteLeftOnBoard;
+        }
     }
 
     public int currentPlayer(){
@@ -97,6 +169,11 @@ public class Board extends Observable{
     public boolean isGameOver(){
         if ((nbTokenWhiteLeftOnBoard + nbTokenWhiteLeftToPlay <= 2) || (nbTokenBlackLeftOnBoard + nbTokenBlackLeftToPlay <= 2)) {
             return true;
+        }else{
+            //TODO: Faire la methode getMoves !
+//            if (getMoves().size() <= 0){
+//                return true;
+//            }
         }
         return false;
     }

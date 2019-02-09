@@ -142,12 +142,17 @@ public class BoardControler implements Observer {
                 }
             }
         }
+        System.out.println("Evaluation de l'etat pour le joueur " + board.currentPlayer() + " : " + board.evaluate());
         if (board.isGameOver()){
             System.out.println("Partie Finie");
+            deactivateEmpty();
+            deactivatePlayer(1);
+            deactivatePlayer(0);
         }
     }
 
     public void play(ActionEvent actionEvent) {
+        //TODO: implementer le fait que si il ne reste que 3 jetons sur le platea on peut se deplacer ou on veut dans la deuxieme phase
         int caseJouee = cases.indexOf((Button) actionEvent.getSource());
         if (phase == 1){
             if (caseJouee == move.getDelPiece()){
@@ -157,20 +162,18 @@ public class BoardControler implements Observer {
             }else{
                 if (board.caseJouable(move.getDelPiece(), caseJouee)){
                     move.setAddPiece(caseJouee);
-
-                    // TODO: tester si il a trois jetons aligné
                     if (board.isMoulinFromMove(caseJouee, move.getDelPiece())){
                         for (int i = 0; i < 24; i++){
                             switch (board.getPosition()[i]){
                                 case "B":{
                                     if (board.currentPlayer() == 0){
-                                        this.cases.get(i).setStyle("-fx-background-color: #000000; -fx-border-color: orange");
+                                        this.cases.get(i).setStyle("-fx-background-color: #000000; -fx-border-color: orange; -fx-border-width: 5");
                                     }
                                     break;
                                 }
                                 case "W":{
                                     if (board.currentPlayer() == 1){
-                                        this.cases.get(i).setStyle("-fx-background-color: #ffffff; -fx-border-color: orange");
+                                        this.cases.get(i).setStyle("-fx-background-color: #ffffff; -fx-border-color: orange; -fx-border-width: 5");
                                     }
                                     break;
                                 }
@@ -200,9 +203,9 @@ public class BoardControler implements Observer {
                 cases.get(caseJouee).setMouseTransparent(false);
                 phase = 1;
                 if (board.currentPlayer() == 0){
-                    cases.get(caseJouee).setStyle("-fx-border-color: red; -fx-background-color: #FFFFFF");
+                    cases.get(caseJouee).setStyle("-fx-border-color: red; -fx-background-color: #FFFFFF; -fx-border-width: 5");
                 }else{
-                    cases.get(caseJouee).setStyle("-fx-border-color: red; -fx-background-color: #000000");
+                    cases.get(caseJouee).setStyle("-fx-border-color: red; -fx-background-color: #000000; -fx-border-width: 5");
                 }
             }else {
                 if (phase == 3){
