@@ -123,51 +123,45 @@ public class Board extends Observable{
             if (moulin[0] == caseJoue){
                 if (currentPlayer() == 0){
                     if(position[moulin[0]].equals("E") && position[moulin[1]].equals("W") && position[moulin[2]].equals("W")){
-                        if (moulin[1] == caseFrom || moulin[2] == caseFrom){
-                            return false;
+                        if (moulin[1] != caseFrom && moulin[2] != caseFrom){
+                            return true;
                         }
-                        return true;
                     }
                 }else{
                     if (position[moulin[0]].equals("E") && position[moulin[1]].equals("B") && position[moulin[2]].equals("B")){
-                        if (moulin[1] == caseFrom || moulin[2] == caseFrom){
-                            return false;
+                        if (moulin[1] != caseFrom && moulin[2] != caseFrom){
+                            return true;
                         }
-                        return true;
                     }
                 }
             }
             if (moulin[1] == caseJoue) {
                 if (currentPlayer() == 0){
                     if(position[moulin[0]].equals("W") && position[moulin[1]].equals("E") && position[moulin[2]].equals("W")){
-                        if (moulin[0] == caseFrom || moulin[2] == caseFrom){
-                            return false;
+                        if (moulin[0] != caseFrom && moulin[2] != caseFrom){
+                            return true;
                         }
-                        return true;
                     }
                 }else{
                     if (position[moulin[0]].equals("B") && position[moulin[1]].equals("E") && position[moulin[2]].equals("B")){
-                        if (moulin[0] == caseFrom || moulin[2] == caseFrom){
-                            return false;
+                        if (moulin[0] != caseFrom && moulin[2] != caseFrom){
+                            return true;
                         }
-                        return true;
                     }
                 }
             }
             if(moulin[2] == caseJoue) {
                 if (currentPlayer() == 0){
                     if(position[moulin[0]].equals("W") && position[moulin[1]].equals("W") && position[moulin[2]].equals("E")){
-                        if (moulin[1] == caseFrom || moulin[0] == caseFrom){
-                            return false;
+                        if (moulin[1] != caseFrom && moulin[0] != caseFrom){
+                            return true;
                         }
-                        return true;
                     }
                 }else{
                     if (position[moulin[0]].equals("B") && position[moulin[1]].equals("B") && position[moulin[2]].equals("E")){
-                        if (moulin[1] == caseFrom || moulin[0] == caseFrom){
-                            return false;
+                        if (moulin[1] != caseFrom && moulin[0] != caseFrom){
+                            return true;
                         }
-                        return true;
                     }
                 }
             }
