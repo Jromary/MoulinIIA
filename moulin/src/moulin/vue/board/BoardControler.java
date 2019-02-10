@@ -152,7 +152,6 @@ public class BoardControler implements Observer {
     }
 
     public void play(ActionEvent actionEvent) {
-        //TODO: implementer le fait que si il ne reste que 3 jetons sur le platea on peut se deplacer ou on veut dans la deuxieme phase
         int caseJouee = cases.indexOf((Button) actionEvent.getSource());
         if (phase == 1){
             if (caseJouee == move.getDelPiece()){
@@ -160,7 +159,7 @@ public class BoardControler implements Observer {
                 move = new Move(-1, -1, -1);
                 update(board, "");
             }else{
-                if (board.caseJouable(move.getDelPiece(), caseJouee)){
+                if (board.caseJouable(move.getDelPiece(), caseJouee) || ((board.currentPlayer() == 0)? board.nbTokenWhiteLeftOnBoard <= 3: board.nbTokenBlackLeftOnBoard <= 3)){
                     move.setAddPiece(caseJouee);
                     if (board.isMoulinFromMove(caseJouee, move.getDelPiece())){
                         for (int i = 0; i < 24; i++){

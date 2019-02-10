@@ -31,11 +31,12 @@ public class Board extends Observable{
     public ArrayList<Move> getMoves(){
         ArrayList<Move> nextMoves = new ArrayList<>();
         //premiere phase de jeu
-        for (int i = 0; i < position.length; i++) {
-            // si on a une case vide alors
-            if (position[i].equals("E")){
-                if ((currentPlayer() == 0 && nbTokenWhiteLeftToPlay > 0 ) ||
-                        (currentPlayer() == 1 && nbTokenBlackLeftToPlay > 0)){
+
+        if ((currentPlayer() == 0 && nbTokenWhiteLeftToPlay > 0 ) ||
+                (currentPlayer() == 1 && nbTokenBlackLeftToPlay > 0)){
+            for (int i = 0; i < position.length; i++) {
+                // si on a une case vide alors
+                if (position[i].equals("E")){
                     // si il nous reste des jeton a jouer en temps que joueur
                     // si on placant un jeton sur cette case on fait un moulin
                     if (isMoulinFromMove(i,-1)){
@@ -52,20 +53,86 @@ public class Board extends Observable{
                                 }
                             }
                         }
-                    // si on ne fait pas de moulin on place alors juste le jeton au bon endroit
+                        // si on ne fait pas de moulin on place alors juste le jeton au bon endroit
                     }else{
                         nextMoves.add(new Move(i,-1,-1));
                     }
                 }
             }
         }
-        /*
-        if ((currentPlayer() == 0 && nbTokenWhiteLeftToPlay > 0 ) ||
-                (currentPlayer() == 1 && nbTokenBlackLeftToPlay > 0)){
-            //TODO: next move quand on a fini de placer les pions et qu'on commance a bouger les pins deja sur le jeu
-            //TODO: verifier si on fait un moulin pour elever la piece enemie
+
+        if ((currentPlayer() == 0 && nbTokenWhiteLeftToPlay <= 0 ) ||
+                (currentPlayer() == 1 && nbTokenBlackLeftToPlay <= 0)){
+            if (currentPlayer() == 0){
+                for (int i = 0; i < position.length; i++) {
+                    if (position[i].equals("W")){
+                        if (nbTokenWhiteLeftOnBoard > 3){
+                            for (int j = 0; j < position.length; j++) {
+                                if (caseJouable(j, i)){
+                                    if (isMoulinFromMove(j, i)){
+                                        for (int k = 0; k < position.length; k++) {
+                                            if (position[k].equals("B")){
+                                                nextMoves.add(new Move(j,i,k));
+                                            }
+                                        }
+                                    }else{
+                                        nextMoves.add(new Move(j,i,-1));
+                                    }
+                                }
+                            }
+                        }else {
+                            for (int j = 0; j < position.length; j++) {
+                                if (position[j].equals("E")){
+                                    if (isMoulinFromMove(j, i)){
+                                        for (int k = 0; k < position.length; k++) {
+                                            if (position[k].equals("B")){
+                                                nextMoves.add(new Move(j,i,k));
+                                            }
+                                        }
+                                    }else{
+                                        nextMoves.add(new Move(j,i,-1));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }else{
+                for (int i = 0; i < position.length; i++) {
+                    if (position[i].equals("B")){
+                        if (nbTokenWhiteLeftOnBoard > 3){
+                            for (int j = 0; j < position.length; j++) {
+                                if (caseJouable(j, i)){
+                                    if (isMoulinFromMove(j, i)){
+                                        for (int k = 0; k < position.length; k++) {
+                                            if (position[k].equals("W")){
+                                                nextMoves.add(new Move(j,i,k));
+                                            }
+                                        }
+                                    }else{
+                                        nextMoves.add(new Move(j,i,-1));
+                                    }
+                                }
+                            }
+                        }else {
+                            for (int j = 0; j < position.length; j++) {
+                                if (position[j].equals("E")){
+                                    if (isMoulinFromMove(j, i)){
+                                        for (int k = 0; k < position.length; k++) {
+                                            if (position[k].equals("W")){
+                                                nextMoves.add(new Move(j,i,k));
+                                            }
+                                        }
+                                    }else{
+                                        nextMoves.add(new Move(j,i,-1));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        */
         return nextMoves;
     }
 
@@ -170,10 +237,9 @@ public class Board extends Observable{
         if ((nbTokenWhiteLeftOnBoard + nbTokenWhiteLeftToPlay <= 2) || (nbTokenBlackLeftOnBoard + nbTokenBlackLeftToPlay <= 2)) {
             return true;
         }else{
-            //TODO: Faire la methode getMoves !
-//            if (getMoves().size() <= 0){
-//                return true;
-//            }
+            if (getMoves().size() <= 0){
+                return true;
+            }
         }
         return false;
     }
