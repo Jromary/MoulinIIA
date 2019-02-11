@@ -4,7 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import moulin.modele.Board;
 import moulin.modele.Move;
 
@@ -35,7 +36,13 @@ public class BoardControler implements Observer {
         for(Node n : boardPane.getChildren()){
             this.cases.add((Button) n);
         }
-        boardPane.setStyle("-fx-background-color: #2F1F00");
+//        boardPane.setStyle("-fx-background-color: #2F1F00");
+//        boardPane.setStyle("-fx-background-image: 'ressources/moulin.png'");
+        BackgroundImage myBI= new BackgroundImage(new Image("ressources/moulin.png",700,700,false,true),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        boardPane.setBackground(new Background(myBI));
+
         update(board, "");
     }
 
