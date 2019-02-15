@@ -3,6 +3,7 @@ package moulin.modele;
 import moulin.modele.graph.Connection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Observable;
 
 public class Board extends Observable{
@@ -38,7 +39,7 @@ public class Board extends Observable{
         this.nbTokenBlackLeftOnBoard = nbTokenBlackLeftOnBoard;
         this.nbTokenWhiteLeftToPlay = nbTokenWhiteLeftToPlay;
         this.nbTokenBlackLeftToPlay = nbTokenBlackLeftToPlay;
-        this.position = position;
+        this.position = Arrays.copyOf(position, position.length);
         this.joueurOdinateur = joueurOdinateur;
     }
 
@@ -203,10 +204,6 @@ public class Board extends Observable{
         double eval = 0;
         int nbpairAlOrdi = nbPaireAlignee(joueurOdinateur);
         int nbpairAlNOrdi = nbPaireAlignee(Math.abs(joueurOdinateur - 1));
-        //System.out.println("nbpair ordi : " + nbpairAlOrdi);
-        //System.out.println("nbpair Nordi : " + nbpairAlNOrdi);
-        //System.out.println("nbRDM ordi : " + nbJetonNonAllignee(joueurOdinateur));
-        //System.out.println("nbRDM Nordi : " + nbJetonNonAllignee(Math.abs(joueurOdinateur - 1)));
         eval = nbpairAlOrdi - nbpairAlNOrdi + alpha * (nbJetonNonAllignee(joueurOdinateur) - nbJetonNonAllignee(Math.abs(joueurOdinateur - 1)));
         return eval;
     }
@@ -223,11 +220,11 @@ public class Board extends Observable{
             if (position[moulin[0]].equals(test)){
                 if (position[moulin[1]].equals(test)){
                     nb++;
-                }else{
-                    if (position[moulin[2]].equals(test)){
-                        nb++;
-                    }
                 }
+                if (position[moulin[2]].equals(test)){
+                    nb++;
+                }
+
             }else{
                 if (position[moulin[1]].equals(test)){
                     if (position[moulin[2]].equals(test)){

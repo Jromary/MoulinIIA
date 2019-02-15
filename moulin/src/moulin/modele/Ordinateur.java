@@ -22,11 +22,13 @@ public class Ordinateur implements Observer {
         Move next_move = null;
         //
         successeurs = board.getMoves();
-        score_max = Double.MIN_VALUE;
+        score_max = -Double.MAX_VALUE;
         for (Move move : successeurs) {
             new_Board = new Board(board.currentPlayer(), Plateau.getInstance(), board.nbTokenWhiteLeftOnBoard, board.nbTokenBlackLeftOnBoard, board.nbTokenWhiteLeftToPlay, board.nbTokenBlackLeftToPlay, board.getPosition(), this.numeroJoueur);
-            score = eval_alpha_beta(new_Board, depth, Double.MIN_VALUE, Double.MAX_VALUE);
-            if (score >= score_max){
+            new_Board.makeMove(move);
+            score = eval_alpha_beta(new_Board, depth, -Double.MAX_VALUE, Double.MAX_VALUE);
+            if (score > score_max){
+                //System.out.println("Best move pour le joueur ordinateur avec un score de " + score +" :\n" + move);
                 next_move = move;
                 score_max = score;
             }
@@ -41,18 +43,22 @@ public class Ordinateur implements Observer {
         ArrayList<Move> successeurs;
         //
         if (b.isGameOver()){
-            //TODO: Refaire la methode gameover pour savoir quel joueur gagne
-            //TODO: retourner la bonne valeur en fonction de eval is gameover
-            return Double.MAX_VALUE;
+            if (b.currentPlayer() == this.numeroJoueur){
+                return Double.MAX_VALUE;
+            }else {
+                return -Double.MAX_VALUE;
+            }
         }
         if (depth == 0) {
+            //System.out.println("\tmax depth reached: " + b.evaluate());
             return b.evaluate();//TODO: ajouter le numero du joueur ici
         }
         successeurs = b.getMoves();
         if (b.currentPlayer() == this.numeroJoueur){
-            score_max = Double.MIN_VALUE;
+            score_max = -Double.MAX_VALUE;
             for (Move move : successeurs) {
                 new_Board = new Board(b.currentPlayer(), Plateau.getInstance(), b.nbTokenWhiteLeftOnBoard, b.nbTokenBlackLeftOnBoard, b.nbTokenWhiteLeftToPlay, b.nbTokenBlackLeftToPlay, b.getPosition(), this.numeroJoueur);
+                new_Board.makeMove(move);
                 score_max = Double.max(score_max, eval_alpha_beta(new_Board, depth-1, alpha, beta));
                 if (score_max >= beta){ //coupure beta
                     return score_max;
@@ -64,6 +70,7 @@ public class Ordinateur implements Observer {
             score_min = Double.MAX_VALUE;
             for (Move move : successeurs) {
                 new_Board = new Board(b.currentPlayer(), Plateau.getInstance(), b.nbTokenWhiteLeftOnBoard, b.nbTokenBlackLeftOnBoard, b.nbTokenWhiteLeftToPlay, b.nbTokenBlackLeftToPlay, b.getPosition(), this.numeroJoueur);
+                new_Board.makeMove(move);
                 score_min = Double.min(score_min, eval_alpha_beta(new_Board, depth-1, alpha, beta));
                 if (score_min <= alpha){ //coupure alpha
                     return score_min;
@@ -77,8 +84,8 @@ public class Ordinateur implements Observer {
     @Override
     public void update(Observable observable, Object o) {
         if (boardJeu.currentPlayer() == this.numeroJoueur){
-            Move move = getBestMove(boardJeu, 1);
-            System.out.println(move);
+            Move move = getBestMove(boardJeu, 3);
+            System.out.println("Mouvement choisi:" + move);
             boardJeu.makeMove(move);
         }
     }
