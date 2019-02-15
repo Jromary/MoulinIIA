@@ -3,6 +3,8 @@ package moulin.modele;
 import moulin.modele.graph.Connection;
 import moulin.modele.graph.Graph;
 
+import java.util.ArrayList;
+
 public class Plateau {
     private static Plateau ourInstance = new Plateau();
     public Graph plateau;
@@ -34,6 +36,18 @@ public class Plateau {
     private Plateau() {
         plateau = new Graph(23);
         initGraph();
+    }
+
+    public ArrayList<Integer> adj(int i) {
+        ArrayList<Integer> adj = new ArrayList<>();
+        for (Connection connection : plateau.getConnection(i)) {
+            if (connection.getFromNode() != i){
+                adj.add(connection.getFromNode());
+            }else{
+                adj.add(connection.getToNode());
+            }
+        }
+        return adj;
     }
 
     private void initGraph(){

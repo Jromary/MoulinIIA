@@ -14,6 +14,7 @@ public class Board extends Observable{
     public int nbTokenBlackLeftToPlay;
     private String[] position;
     private int joueurOdinateur = 1;
+    private Ordinateur ordinateur;
 
     public Board(){
         nbTokenWhiteLeftToPlay = 9;
@@ -26,95 +27,116 @@ public class Board extends Observable{
         for (int i = 0; i < 24; i++){
             position[i] = "E";
         }
+        ordinateur = new Ordinateur(this, joueurOdinateur);
+        //maj();
+    }
+
+    public Board(int activePlayer, Plateau plateau, int nbTokenWhiteLeftOnBoard, int nbTokenBlackLeftOnBoard, int nbTokenWhiteLeftToPlay, int nbTokenBlackLeftToPlay, String[] position, int joueurOdinateur) {
+        this.activePlayer = activePlayer;
+        this.plateau = plateau;
+        this.nbTokenWhiteLeftOnBoard = nbTokenWhiteLeftOnBoard;
+        this.nbTokenBlackLeftOnBoard = nbTokenBlackLeftOnBoard;
+        this.nbTokenWhiteLeftToPlay = nbTokenWhiteLeftToPlay;
+        this.nbTokenBlackLeftToPlay = nbTokenBlackLeftToPlay;
+        this.position = position;
+        this.joueurOdinateur = joueurOdinateur;
     }
 
     public ArrayList<Move> getMoves(){
         ArrayList<Move> nextMoves = new ArrayList<>();
-        //premiere phase de jeu
 
-        if ((currentPlayer() == 0 && nbTokenWhiteLeftToPlay > 0 ) ||
-                (currentPlayer() == 1 && nbTokenBlackLeftToPlay > 0)){
-            for (int i = 0; i < position.length; i++) {
-                // si on a une case vide alors
-                if (position[i].equals("E")){
-                    // si il nous reste des jeton a jouer en temps que joueur
-                    // si on placant un jeton sur cette case on fait un moulin
-                    if (isMoulinFromMove(i,-1)){
-                        //on cherche toutes les case ou il y a une adversaire
-                        for (int j = 0; j < position.length; j++) {
-                            if (currentPlayer() == 1){
-                                if (position[j].equals("W")){
-                                    nextMoves.add(new Move(i,-1,j));
-                                }
-                            }
-                            if (currentPlayer() == 0){
+        if (currentPlayer() == 0){
+            if (nbTokenWhiteLeftToPlay > 0){//il me reste de jeton a jouer
+                for (int i = 0; i < position.length; i++) {
+                    if (position[i].equals("E")){
+                        if (isMoulinFromMove(i,-1)){
+                            for (int j = 0; j < position.length; j++) {
                                 if (position[j].equals("B")){
                                     nextMoves.add(new Move(i,-1,j));
                                 }
                             }
-                        }
-                        // si on ne fait pas de moulin on place alors juste le jeton au bon endroit
-                    }else{
-                        nextMoves.add(new Move(i,-1,-1));
-                    }
-                }
-            }
-        }
-
-        if ((currentPlayer() == 0 && nbTokenWhiteLeftToPlay <= 0 ) ||
-                (currentPlayer() == 1 && nbTokenBlackLeftToPlay <= 0)){
-            if (currentPlayer() == 0){
-                for (int i = 0; i < position.length; i++) {
-                    if (position[i].equals("W")){
-                        if (nbTokenWhiteLeftOnBoard > 3){
-                            for (int j = 0; j < position.length; j++) {
-                                if (caseJouable(j, i)){
-                                    if (isMoulinFromMove(j, i)){
-                                        for (int k = 0; k < position.length; k++) {
-                                            if (position[k].equals("B")){
-                                                nextMoves.add(new Move(j,i,k));
-                                            }
-                                        }
-                                    }else{
-                                        nextMoves.add(new Move(j,i,-1));
-                                    }
-                                }
-                            }
                         }else {
-                            for (int j = 0; j < position.length; j++) {
-                                if (position[j].equals("E")){
-                                    if (isMoulinFromMove(j, i)){
-                                        for (int k = 0; k < position.length; k++) {
-                                            if (position[k].equals("B")){
-                                                nextMoves.add(new Move(j,i,k));
-                                            }
-                                        }
-                                    }else{
-                                        nextMoves.add(new Move(j,i,-1));
-                                    }
-                                }
-                            }
+                            nextMoves.add(new Move(i,-1,-1));
                         }
                     }
                 }
             }else{
-                for (int i = 0; i < position.length; i++) {
-                    if (position[i].equals("B")){
-                        if (nbTokenWhiteLeftOnBoard > 3){
+                if (nbTokenWhiteLeftOnBoard > 3){//je n'ai plus de jeton a jouer
+                    for (int i = 0; i < position.length; i++) {
+                        if (position[i].equals("W")){
+                            for (int adj : plateau.adj(i)) {
+                                if (position[adj].equals("E")){
+                                    if (isMoulinFromMove(adj, i)){
+                                        for (int j = 0; j < position.length; j++) {
+                                            if (position[j].equals("B")){
+                                                nextMoves.add(new Move(adj, i, j));
+                                            }
+                                        }
+                                    }else {
+                                        nextMoves.add(new Move(adj, i, -1));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }else {
+                    for (int i = 0; i < position.length; i++) {
+                        if (position[i].equals("W")){
                             for (int j = 0; j < position.length; j++) {
-                                if (caseJouable(j, i)){
+                                if (position[j].equals("E")){
                                     if (isMoulinFromMove(j, i)){
                                         for (int k = 0; k < position.length; k++) {
-                                            if (position[k].equals("W")){
+                                            if (position[k].equals("B")){
                                                 nextMoves.add(new Move(j,i,k));
                                             }
                                         }
-                                    }else{
+                                    }else {
                                         nextMoves.add(new Move(j,i,-1));
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }else {//joueur Black
+            //TODO: copier ce qui ce trouve au dessus. en addaptant pour le joueur noir
+            if (nbTokenBlackLeftToPlay > 0){//il me reste de jeton a jouer
+                for (int i = 0; i < position.length; i++) {
+                    if (position[i].equals("E")){
+                        if (isMoulinFromMove(i,-1)){
+                            for (int j = 0; j < position.length; j++) {
+                                if (position[j].equals("W")){
+                                    nextMoves.add(new Move(i,-1,j));
+                                }
+                            }
                         }else {
+                            nextMoves.add(new Move(i,-1,-1));
+                        }
+                    }
+                }
+            }else{
+                if (nbTokenBlackLeftOnBoard > 3){//je n'ai plus de jeton a jouer
+                    for (int i = 0; i < position.length; i++) {
+                        if (position[i].equals("B")){
+                            for (int adj : plateau.adj(i)) {
+                                if (position[adj].equals("E")){
+                                    if (isMoulinFromMove(adj, i)){
+                                        for (int j = 0; j < position.length; j++) {
+                                            if (position[j].equals("W")){
+                                                nextMoves.add(new Move(adj, i, j));
+                                            }
+                                        }
+                                    }else {
+                                        nextMoves.add(new Move(adj, i, -1));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }else {
+                    for (int i = 0; i < position.length; i++) {
+                        if (position[i].equals("B")){
                             for (int j = 0; j < position.length; j++) {
                                 if (position[j].equals("E")){
                                     if (isMoulinFromMove(j, i)){
@@ -123,7 +145,7 @@ public class Board extends Observable{
                                                 nextMoves.add(new Move(j,i,k));
                                             }
                                         }
-                                    }else{
+                                    }else {
                                         nextMoves.add(new Move(j,i,-1));
                                     }
                                 }
@@ -177,14 +199,14 @@ public class Board extends Observable{
     }
 
     public double evaluate(){
-        double alpha = 0.5;
+        double alpha = 0.3;
         double eval = 0;
         int nbpairAlOrdi = nbPaireAlignee(joueurOdinateur);
         int nbpairAlNOrdi = nbPaireAlignee(Math.abs(joueurOdinateur - 1));
-        System.out.println("nbpair ordi : " + nbpairAlOrdi);
-        System.out.println("nbpair Nordi : " + nbpairAlNOrdi);
-        System.out.println("nbRDM ordi : " + nbJetonNonAllignee(joueurOdinateur));
-        System.out.println("nbRDM Nordi : " + nbJetonNonAllignee(Math.abs(joueurOdinateur - 1)));
+        //System.out.println("nbpair ordi : " + nbpairAlOrdi);
+        //System.out.println("nbpair Nordi : " + nbpairAlNOrdi);
+        //System.out.println("nbRDM ordi : " + nbJetonNonAllignee(joueurOdinateur));
+        //System.out.println("nbRDM Nordi : " + nbJetonNonAllignee(Math.abs(joueurOdinateur - 1)));
         eval = nbpairAlOrdi - nbpairAlNOrdi + alpha * (nbJetonNonAllignee(joueurOdinateur) - nbJetonNonAllignee(Math.abs(joueurOdinateur - 1)));
         return eval;
     }
@@ -234,6 +256,7 @@ public class Board extends Observable{
     }
 
     public boolean isGameOver(){
+        //TODO: return 0 si joueur 0 win; return 1 si joueur 1 win, return -1 sinon
         if ((nbTokenWhiteLeftOnBoard + nbTokenWhiteLeftToPlay <= 2) || (nbTokenBlackLeftOnBoard + nbTokenBlackLeftToPlay <= 2)) {
             return true;
         }else{
@@ -249,6 +272,9 @@ public class Board extends Observable{
     }
 
     public boolean caseJouable(int caseABouger, int caseJouee) {
+        if(caseABouger == caseJouee || !position[caseJouee].equals("E") ){
+            return false;
+        }
         if (caseABouger == -1){
             return true;
         }
