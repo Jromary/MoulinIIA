@@ -42,6 +42,7 @@ public class Ordinateur implements Observer {
         //
         if (b.isGameOver()){
             //TODO: Refaire la methode gameover pour savoir quel joueur gagne
+            //TODO: retourner la bonne valeur en fonction de eval is gameover
             return Double.MAX_VALUE;
         }
         if (depth == 0) {
