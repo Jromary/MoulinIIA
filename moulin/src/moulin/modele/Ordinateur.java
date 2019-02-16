@@ -83,8 +83,13 @@ public class Ordinateur implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-        if (boardJeu.currentPlayer() == this.numeroJoueur){
-            Move move = getBestMove(boardJeu, 3);
+        if (boardJeu.currentPlayer() == this.numeroJoueur && !boardJeu.isGameOver()){
+            Move move = null;
+            if (boardJeu.nbTokenBlackLeftToPlay > 0){
+                move = getBestMove(boardJeu, 3);
+            }else{
+                move = getBestMove(boardJeu, 5);
+            }
             System.out.println("Mouvement choisi:" + move);
             boardJeu.makeMove(move);
         }
