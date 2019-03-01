@@ -1,5 +1,7 @@
 package moulin.modele;
 
+import moulin.modele.connec.Client;
+import moulin.modele.connec.Serveur;
 import moulin.modele.graph.Connection;
 
 import java.util.ArrayList;
@@ -7,6 +9,7 @@ import java.util.Arrays;
 import java.util.Observable;
 
 public class Board extends Observable{
+    public boolean online = false;
     private int activePlayer; //0 = white ; 1 = black
     private Plateau plateau;
     public int nbTokenWhiteLeftOnBoard;
@@ -14,8 +17,19 @@ public class Board extends Observable{
     public int nbTokenWhiteLeftToPlay;
     public int nbTokenBlackLeftToPlay;
     private String[] position;
-    private int joueurOdinateur = 1;
+    public static int joueurOdinateur = 1;
     private Ordinateur ordinateur;
+
+
+    public Board(String ip){
+        this();
+        this.online = true;
+        if (joueurOdinateur == 1){
+            Serveur.getInstance().init(this);
+        }else {
+            Client.getInstance().init(ip, this);
+        }
+    }
 
     public Board(){
         nbTokenWhiteLeftToPlay = 9;
@@ -29,7 +43,7 @@ public class Board extends Observable{
             position[i] = "E";
         }
         ordinateur = new Ordinateur(this, joueurOdinateur);
-        //maj();
+        maj();
     }
 
     public Board(int activePlayer, Plateau plateau, int nbTokenWhiteLeftOnBoard, int nbTokenBlackLeftOnBoard, int nbTokenWhiteLeftToPlay, int nbTokenBlackLeftToPlay, String[] position, int joueurOdinateur) {
@@ -228,10 +242,10 @@ public class Board extends Observable{
         int nbMillBlockOrdi = 0;
         int nbMillBlockNOrdi = 0;
 
-        eval =  coef[0] * (nbpairAlLibreOrdi - nbpairAlLibreNOrdi) +
-                coef[1] * (nbpairAlMalOrdi - nbpairAlMalNOrdi) +
-                coef[2] * (nbMillOrdi - nbMillNOrdi) +
-                coef[3] * (nbMillBlockOrdi - nbMillBlockNOrdi);
+        eval =  (coef[0] * (nbpairAlLibreOrdi - nbpairAlLibreNOrdi)) +
+                (coef[1] * (nbpairAlMalOrdi - nbpairAlMalNOrdi)) +
+                (coef[2] * (nbMillOrdi - nbMillNOrdi)) +
+                (coef[3] * (nbMillBlockOrdi - nbMillBlockNOrdi));
 
         return eval;
     }

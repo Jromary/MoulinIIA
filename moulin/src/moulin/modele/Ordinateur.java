@@ -1,5 +1,8 @@
 package moulin.modele;
 
+import moulin.modele.connec.Client;
+import moulin.modele.connec.Serveur;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
@@ -107,7 +110,26 @@ public class Ordinateur implements Observer {
             }else{
                 move = getBestMove(boardJeu, 5);
             }
-            System.out.println("Mouvement choisi:" + move);
+            if (boardJeu.online){
+                if (this.numeroJoueur == 1){
+                    try {
+                        Serveur.getInstance().send(move.encode());
+                    } catch (Exception e) {
+                        System.out.println("ERREUR LORS DE L'ENVOIE DU MOUVEMENT: " + move.encode());
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                }else {
+                    try {
+                        Client.getInstance().send(move.encode());
+                    } catch (Exception e) {
+                        System.out.println("ERREUR LORS DE L'ENVOIE DU MOUVEMENT: " + move.encode());
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+
             boardJeu.makeMove(move);
         }
     }
