@@ -34,7 +34,7 @@ public class Ordinateur implements Observer {
             new_Board.makeMove(move);
             score = eval_alpha_beta(new_Board, depth, -Double.MAX_VALUE, Double.MAX_VALUE);
             System.out.println(score);
-            if (score > score_max){
+            if (score >= score_max){
                 System.out.println("\t" + score);
                 //System.out.println("Best move pour le joueur ordinateur avec un score de " + score +" :\n" + move);
                 next_move = move;
@@ -52,9 +52,9 @@ public class Ordinateur implements Observer {
         //
         if (b.isGameOver()){
             if (b.currentPlayer() == this.numeroJoueur){
-                return Double.MAX_VALUE;
-            }else {
                 return -Double.MAX_VALUE;
+            }else {
+                return Double.MAX_VALUE;
             }
         }
         if (depth == 0) {
@@ -106,9 +106,9 @@ public class Ordinateur implements Observer {
         if (boardJeu.currentPlayer() == this.numeroJoueur && !boardJeu.isGameOver()){
             Move move = null;
             if (boardJeu.nbTokenBlackLeftToPlay > 0){
-                move = getBestMove(boardJeu, 3);
-            }else{
                 move = getBestMove(boardJeu, 5);
+            }else{
+                move = getBestMove(boardJeu, 7);
             }
             if (boardJeu.online){
                 if (this.numeroJoueur == 1){

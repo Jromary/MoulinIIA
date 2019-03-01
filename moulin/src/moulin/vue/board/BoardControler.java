@@ -135,11 +135,7 @@ public class BoardControler implements Observer {
                 this.phase = 2;
             }
         }else{
-            deactivatePlayer(1);
-            deactivatePlayer(0);
-            deactivateEmpty();
-            //TODO: gerer l'affichage en fonction de quel joueuer est joué l'ordinateur
-            /*
+
             if (board.currentPlayer() == 1){
                 // si il lui reste des pieces a jouer on desactive tout sauf la ou il peut placer
                 if (board.nbTokenBlackLeftToPlay > 0){
@@ -152,8 +148,15 @@ public class BoardControler implements Observer {
                     deactivatePlayer(1);
                     this.phase = 2;
                 }
-            }*/
+            }
         }
+
+        if (board.currentPlayer() == board.joueurOdinateur){
+            deactivatePlayer(1);
+            deactivatePlayer(0);
+            deactivateEmpty();
+        }
+
         if (board.isGameOver()){
             System.out.println("Partie Finie");
             deactivateEmpty();

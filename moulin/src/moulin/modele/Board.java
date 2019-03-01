@@ -17,7 +17,7 @@ public class Board extends Observable{
     public int nbTokenWhiteLeftToPlay;
     public int nbTokenBlackLeftToPlay;
     private String[] position;
-    public static int joueurOdinateur = 1;
+    public static int joueurOdinateur = 0;
     private Ordinateur ordinateur;
 
 
@@ -115,7 +115,6 @@ public class Board extends Observable{
                 }
             }
         }else {//joueur Black
-            //TODO: copier ce qui ce trouve au dessus. en addaptant pour le joueur noir
             if (nbTokenBlackLeftToPlay > 0){//il me reste de jeton a jouer
                 for (int i = 0; i < position.length; i++) {
                     if (position[i].equals("E")){
@@ -366,11 +365,15 @@ public class Board extends Observable{
         if ((nbTokenWhiteLeftOnBoard + nbTokenWhiteLeftToPlay <= 2) || (nbTokenBlackLeftOnBoard + nbTokenBlackLeftToPlay <= 2)) {
             return true;
         }else{
-            if (getMoves().size() <= 0){
+            if (getMoves().size() <= 0 || getMoves().isEmpty()){
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean whiteWin(){
+        return (nbTokenBlackLeftOnBoard + nbTokenBlackLeftToPlay <= 2) || (currentPlayer() == 1 && getMoves().size() <= 0);
     }
 
     public String[] getPosition() {
