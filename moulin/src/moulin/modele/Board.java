@@ -200,12 +200,107 @@ public class Board extends Observable{
     }
 
     public double evaluate(){
+        /*
         double alpha = 0.3;
         double eval = 0;
         int nbpairAlOrdi = nbPaireAlignee(joueurOdinateur);
         int nbpairAlNOrdi = nbPaireAlignee(Math.abs(joueurOdinateur - 1));
         eval = nbpairAlOrdi - nbpairAlNOrdi + alpha * (nbJetonNonAllignee(joueurOdinateur) - nbJetonNonAllignee(Math.abs(joueurOdinateur - 1)));
         return eval;
+        */
+        return evaluateBis();
+    }
+
+    private double evaluateBis(){
+        double eval = 0;
+
+        int[] coef = {2, -1, 4, 2};
+
+        int nbpairAlLibreOrdi = nbPaireAligneeLibre(joueurOdinateur);
+        int nbpairAlLibreNOrdi = nbPaireAligneeLibre(Math.abs(joueurOdinateur - 1));
+
+        int nbpairAlMalOrdi = nbPaireAligneeMal(joueurOdinateur);
+        int nbpairAlMalNOrdi = nbPaireAligneeMal(Math.abs(joueurOdinateur - 1));
+
+        int nbMillOrdi = nbMoulin(joueurOdinateur);
+        int nbMillNOrdi = nbMoulin(Math.abs(joueurOdinateur - 1));
+
+        int nbMillBlockOrdi = 0;
+        int nbMillBlockNOrdi = 0;
+
+        eval =  coef[0] * (nbpairAlLibreOrdi - nbpairAlLibreNOrdi) +
+                coef[1] * (nbpairAlMalOrdi - nbpairAlMalNOrdi) +
+                coef[2] * (nbMillOrdi - nbMillNOrdi) +
+                coef[3] * (nbMillBlockOrdi - nbMillBlockNOrdi);
+
+        return eval;
+    }
+
+    private int nbMoulin(int joueur){
+        int nb = 0;
+        String test;
+        if (joueur == 1){
+            test = "B";
+        }else{
+            test = "W";
+        }
+        for (int[] moulin : plateau.lesMoulin) {
+            if (position[moulin[0]].equals(test) && position[moulin[1]].equals(test) && position[moulin[2]].equals(test)) {
+                nb++;
+            }
+        }
+        return nb;
+    }
+
+    private int nbPaireAligneeMal(int joueur){
+        int nb = 0;
+        String test;
+        String testOP;
+        if (joueur == 1){
+            test = "B";
+            testOP = "W";
+        }else{
+            test = "W";
+            testOP = "B";
+        }
+        for (int[] moulin : plateau.lesMoulin) {
+            if (position[moulin[0]].equals(test)){
+                if (position[moulin[1]].equals(testOP) || position[moulin[2]].equals(testOP)){
+                    nb++;
+                }
+            }else{
+                if (position[moulin[1]].equals(test)){
+                    if (position[moulin[0]].equals(testOP) || position[moulin[2]].equals(testOP)){
+                        nb++;
+                    }
+                }else{
+                    if (position[moulin[2]].equals(test)){
+                        if (position[moulin[0]].equals(testOP) || position[moulin[1]].equals(testOP)){
+                            nb++;
+                        }
+                    }
+                }
+            }
+        }
+        return nb;
+    }
+
+    private int nbPaireAligneeLibre(int joueur){
+        int nb = 0;
+        String test;
+        if (joueur == 1){
+            test = "B";
+        }else{
+            test = "W";
+        }
+        for (int[] moulin : plateau.lesMoulin) {
+            if ((   position[moulin[0]].equals(test) && position[moulin[1]].equals(test) && position[moulin[2]].equals("E")) ||
+                (   position[moulin[0]].equals(test) && position[moulin[1]].equals("E") && position[moulin[2]].equals(test)) ||
+                (   position[moulin[0]].equals("E") && position[moulin[1]].equals(test) && position[moulin[2]].equals(test))){
+                nb++;
+            }
+        }
+        return nb;
     }
 
     private int nbPaireAlignee(int joueur){
@@ -334,6 +429,19 @@ public class Board extends Observable{
         }
 
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board board = (Board) o;
+        return Arrays.equals(position, board.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(position);
     }
 }
 

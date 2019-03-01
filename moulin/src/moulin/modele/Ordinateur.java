@@ -1,17 +1,20 @@
 package moulin.modele;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
 public class Ordinateur implements Observer {
     private Board boardJeu;
     private int numeroJoueur;
+    private HashMap<Board, Double> sauvegarde;
 
     public Ordinateur(Board boardJeu, int numeroJoueur){
         this.boardJeu = boardJeu;
         boardJeu.addObserver(this);
         this.numeroJoueur = numeroJoueur;
+        sauvegarde = new HashMap<>();
     }
 
     public Move getBestMove(Board board, int depth){
@@ -27,7 +30,9 @@ public class Ordinateur implements Observer {
             new_Board = new Board(board.currentPlayer(), Plateau.getInstance(), board.nbTokenWhiteLeftOnBoard, board.nbTokenBlackLeftOnBoard, board.nbTokenWhiteLeftToPlay, board.nbTokenBlackLeftToPlay, board.getPosition(), this.numeroJoueur);
             new_Board.makeMove(move);
             score = eval_alpha_beta(new_Board, depth, -Double.MAX_VALUE, Double.MAX_VALUE);
+            System.out.println(score);
             if (score > score_max){
+                System.out.println("\t" + score);
                 //System.out.println("Best move pour le joueur ordinateur avec un score de " + score +" :\n" + move);
                 next_move = move;
                 score_max = score;
@@ -59,7 +64,13 @@ public class Ordinateur implements Observer {
             for (Move move : successeurs) {
                 new_Board = new Board(b.currentPlayer(), Plateau.getInstance(), b.nbTokenWhiteLeftOnBoard, b.nbTokenBlackLeftOnBoard, b.nbTokenWhiteLeftToPlay, b.nbTokenBlackLeftToPlay, b.getPosition(), this.numeroJoueur);
                 new_Board.makeMove(move);
-                score_max = Double.max(score_max, eval_alpha_beta(new_Board, depth-1, alpha, beta));
+                if (sauvegarde.containsKey(new_Board)){
+                    score = sauvegarde.get(new_Board);
+                }else {
+                    score = eval_alpha_beta(new_Board, depth-1, alpha, beta);
+                    sauvegarde.put(new_Board, score);
+                }
+                score_max = Double.max(score_max, score);
                 if (score_max >= beta){ //coupure beta
                     return score_max;
                 }
@@ -71,7 +82,13 @@ public class Ordinateur implements Observer {
             for (Move move : successeurs) {
                 new_Board = new Board(b.currentPlayer(), Plateau.getInstance(), b.nbTokenWhiteLeftOnBoard, b.nbTokenBlackLeftOnBoard, b.nbTokenWhiteLeftToPlay, b.nbTokenBlackLeftToPlay, b.getPosition(), this.numeroJoueur);
                 new_Board.makeMove(move);
-                score_min = Double.min(score_min, eval_alpha_beta(new_Board, depth-1, alpha, beta));
+                if (sauvegarde.containsKey(new_Board)){
+                    score = sauvegarde.get(new_Board);
+                }else {
+                    score = eval_alpha_beta(new_Board, depth - 1, alpha, beta);
+                    sauvegarde.put(new_Board, score);
+                }
+                score_min = Double.min(score_min, score);
                 if (score_min <= alpha){ //coupure alpha
                     return score_min;
                 }
