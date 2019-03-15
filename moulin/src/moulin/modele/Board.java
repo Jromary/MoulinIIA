@@ -17,7 +17,7 @@ public class Board extends Observable{
     public int nbTokenWhiteLeftToPlay;
     public int nbTokenBlackLeftToPlay;
     private String[] position;
-    public static int joueurOdinateur = 0;
+    public static int joueurOdinateur = 1;
     private Ordinateur ordinateur;
 
 

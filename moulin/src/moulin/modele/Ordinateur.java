@@ -183,7 +183,6 @@ public class Ordinateur implements Observer {
                     }
                 }
             }
-
             boardJeu.makeMove(move);
         }
     }
