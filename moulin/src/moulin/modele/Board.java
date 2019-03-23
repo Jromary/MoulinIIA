@@ -18,9 +18,12 @@ public class Board extends Observable{
     public int nbTokenBlackLeftToPlay;
     private String[] position;
     public static int joueurOdinateur = 1;
-    private Ordinateur ordinateur;
+    public Ordinateur ordinateur = null;
 
-
+    /**
+     * creation du jeu avec ip
+     * @param ip ip du serveur sur lequel il faut ce connecter
+     */
     public Board(String ip){
         this();
         this.online = true;
@@ -31,6 +34,9 @@ public class Board extends Observable{
         }
     }
 
+    /**
+     * creation du jeu par default
+     */
     public Board(){
         nbTokenWhiteLeftToPlay = 9;
         nbTokenBlackLeftToPlay = 9;
@@ -42,10 +48,21 @@ public class Board extends Observable{
         for (int i = 0; i < 24; i++){
             position[i] = "E";
         }
-        ordinateur = new Ordinateur(this, joueurOdinateur);
+        ordinateur = new Ordinateur(this, 1);
         maj();
     }
 
+    /**
+     * creation de copie
+     * @param activePlayer
+     * @param plateau
+     * @param nbTokenWhiteLeftOnBoard
+     * @param nbTokenBlackLeftOnBoard
+     * @param nbTokenWhiteLeftToPlay
+     * @param nbTokenBlackLeftToPlay
+     * @param position
+     * @param joueurOdinateur
+     */
     public Board(int activePlayer, Plateau plateau, int nbTokenWhiteLeftOnBoard, int nbTokenBlackLeftOnBoard, int nbTokenWhiteLeftToPlay, int nbTokenBlackLeftToPlay, String[] position, int joueurOdinateur) {
         this.activePlayer = activePlayer;
         this.plateau = plateau;
@@ -57,11 +74,16 @@ public class Board extends Observable{
         this.joueurOdinateur = joueurOdinateur;
     }
 
+    /**
+     * recuperation de la liste de mouvement possible a partir d'une position actuel
+     * @return ArrayList<Move>
+     */
     public ArrayList<Move> getMoves(){
         ArrayList<Move> nextMoves = new ArrayList<>();
 
         if (currentPlayer() == 0){
-            if (nbTokenWhiteLeftToPlay > 0){//il me reste de jeton a jouer
+            if (nbTokenWhiteLeftToPlay > 0){
+                //il me reste de jeton a jouer
                 for (int i = 0; i < position.length; i++) {
                     if (position[i].equals("E")){
                         if (isMoulinFromMove(i,-1)){
@@ -76,7 +98,8 @@ public class Board extends Observable{
                     }
                 }
             }else{
-                if (nbTokenWhiteLeftOnBoard > 3){//je n'ai plus de jeton a jouer
+                if (nbTokenWhiteLeftOnBoard > 3){
+                    //je n'ai plus de jeton a jouer
                     for (int i = 0; i < position.length; i++) {
                         if (position[i].equals("W")){
                             for (int adj : plateau.adj(i)) {
@@ -115,7 +138,8 @@ public class Board extends Observable{
                 }
             }
         }else {//joueur Black
-            if (nbTokenBlackLeftToPlay > 0){//il me reste de jeton a jouer
+            if (nbTokenBlackLeftToPlay > 0){
+                //il me reste de jeton a jouer
                 for (int i = 0; i < position.length; i++) {
                     if (position[i].equals("E")){
                         if (isMoulinFromMove(i,-1)){
@@ -130,7 +154,8 @@ public class Board extends Observable{
                     }
                 }
             }else{
-                if (nbTokenBlackLeftOnBoard > 3){//je n'ai plus de jeton a jouer
+                if (nbTokenBlackLeftOnBoard > 3){
+                    //je n'ai plus de jeton a jouer
                     for (int i = 0; i < position.length; i++) {
                         if (position[i].equals("B")){
                             for (int adj : plateau.adj(i)) {
@@ -172,6 +197,10 @@ public class Board extends Observable{
         return nextMoves;
     }
 
+    /**
+     * methode qui applique un mouvement su le plateau actuel
+     * @param move mouvement a effectuer
+     */
     public void makeMove(Move move){
         if (currentPlayer() == 0){
             position[move.getAddPiece()] = "W";
@@ -207,12 +236,20 @@ public class Board extends Observable{
         maj();
     }
 
+    /**
+     * Mise a jour des observer
+     */
     private void maj() {
         setChanged();
         notifyObservers();
     }
 
-    public double evaluate(){
+    /**
+     * premiere version de evaluate
+     * @param joueur actif
+     * @return
+     */
+    public double evaluate(int joueur){
         /*
         double alpha = 0.3;
         double eval = 0;
@@ -221,25 +258,30 @@ public class Board extends Observable{
         eval = nbpairAlOrdi - nbpairAlNOrdi + alpha * (nbJetonNonAllignee(joueurOdinateur) - nbJetonNonAllignee(Math.abs(joueurOdinateur - 1)));
         return eval;
         */
-        return evaluateBis();
+        return evaluateBis(joueur);
     }
 
-    private double evaluateBis(){
+    /**
+     * evaluate advenced
+     * @param joueur actif
+     * @return
+     */
+    private double evaluateBis(int joueur){
         double eval = 0;
 
-        int[] coef = {2, -1, 4, 2};
+        int[] coef = {2, -1, 4, 3};
 
-        int nbpairAlLibreOrdi = nbPaireAligneeLibre(joueurOdinateur);
-        int nbpairAlLibreNOrdi = nbPaireAligneeLibre(Math.abs(joueurOdinateur - 1));
+        int nbpairAlLibreOrdi = nbPaireAligneeLibre(joueur);
+        int nbpairAlLibreNOrdi = nbPaireAligneeLibre(Math.abs(joueur - 1));
 
-        int nbpairAlMalOrdi = nbPaireAligneeMal(joueurOdinateur);
-        int nbpairAlMalNOrdi = nbPaireAligneeMal(Math.abs(joueurOdinateur - 1));
+        int nbpairAlMalOrdi = nbPaireAligneeMal(joueur);
+        int nbpairAlMalNOrdi = nbPaireAligneeMal(Math.abs(joueur - 1));
 
-        int nbMillOrdi = nbMoulin(joueurOdinateur);
-        int nbMillNOrdi = nbMoulin(Math.abs(joueurOdinateur - 1));
+        int nbMillOrdi = nbMoulin(joueur);
+        int nbMillNOrdi = nbMoulin(Math.abs(joueur - 1));
 
-        int nbMillBlockOrdi = 0;
-        int nbMillBlockNOrdi = 0;
+        int nbMillBlockOrdi = nbMillBlock(joueur);
+        int nbMillBlockNOrdi = nbMillBlock(Math.abs(joueur - 1));
 
         eval =  (coef[0] * (nbpairAlLibreOrdi - nbpairAlLibreNOrdi)) +
                 (coef[1] * (nbpairAlMalOrdi - nbpairAlMalNOrdi)) +
@@ -249,6 +291,49 @@ public class Board extends Observable{
         return eval;
     }
 
+    /**
+     * verifie nombre de moulin bloqué par joueur
+     * @param joueur
+     * @return
+     */
+    private int nbMillBlock(int joueur) {
+        int nb = 0;
+        String test;
+        String testOP;
+        if (joueur == 1){
+            test = "B";
+            testOP = "W";
+        }else{
+            test = "W";
+            testOP = "B";
+        }
+        for (int[] moulin : plateau.lesMoulin) {
+            if (position[moulin[0]].equals(test)){
+                if (position[moulin[1]].equals(testOP) && position[moulin[2]].equals(testOP)){
+                    nb++;
+                }
+            }else{
+                if (position[moulin[1]].equals(test)){
+                    if (position[moulin[0]].equals(testOP) && position[moulin[2]].equals(testOP)){
+                        nb++;
+                    }
+                }else{
+                    if (position[moulin[2]].equals(test)){
+                        if (position[moulin[0]].equals(testOP) && position[moulin[1]].equals(testOP)){
+                            nb++;
+                        }
+                    }
+                }
+            }
+        }
+        return nb;
+    }
+
+    /**
+     * nombre de moulin fait par le joueur
+     * @param joueur
+     * @return
+     */
     private int nbMoulin(int joueur){
         int nb = 0;
         String test;
@@ -265,6 +350,11 @@ public class Board extends Observable{
         return nb;
     }
 
+    /**
+     * calcule le nombre de pair mal aligné
+     * @param joueur
+     * @return
+     */
     private int nbPaireAligneeMal(int joueur){
         int nb = 0;
         String test;
@@ -298,6 +388,11 @@ public class Board extends Observable{
         return nb;
     }
 
+    /**
+     * calcul le nombre de pair aligné libre
+     * @param joueur
+     * @return
+     */
     private int nbPaireAligneeLibre(int joueur){
         int nb = 0;
         String test;
@@ -316,6 +411,11 @@ public class Board extends Observable{
         return nb;
     }
 
+    /**
+     * nombre de pair osef
+     * @param joueur
+     * @return
+     */
     private int nbPaireAlignee(int joueur){
         int nb = 0;
         String test;
@@ -356,12 +456,19 @@ public class Board extends Observable{
         }
     }
 
+    /**
+     * retourne le joueur actuel
+     * @return
+     */
     public int currentPlayer(){
         return activePlayer;
     }
 
+    /**
+     * verifie si le jeu est fini ou pas
+     * @return
+     */
     public boolean isGameOver(){
-        //TODO: return 0 si joueur 0 win; return 1 si joueur 1 win, return -1 sinon
         if ((nbTokenWhiteLeftOnBoard + nbTokenWhiteLeftToPlay <= 2) || (nbTokenBlackLeftOnBoard + nbTokenBlackLeftToPlay <= 2)) {
             return true;
         }else{
@@ -376,10 +483,20 @@ public class Board extends Observable{
         return (nbTokenBlackLeftOnBoard + nbTokenBlackLeftToPlay <= 2) || (currentPlayer() == 1 && getMoves().size() <= 0);
     }
 
+    /**
+     * retourne le tableau des position
+     * @return
+     */
     public String[] getPosition() {
         return position;
     }
 
+    /**
+     * la case est elle jouable depuis la ou je vien
+     * @param caseABouger
+     * @param caseJouee
+     * @return
+     */
     public boolean caseJouable(int caseABouger, int caseJouee) {
         if(caseABouger == caseJouee || !position[caseJouee].equals("E") ){
             return false;
@@ -396,6 +513,12 @@ public class Board extends Observable{
         return false;
     }
 
+    /**
+     * je fait un moulin en jouaunt ?
+     * @param caseJoue
+     * @param caseFrom
+     * @return
+     */
     public boolean isMoulinFromMove(int caseJoue, int caseFrom){
         for (int[] moulin : plateau.lesMoulin) {
             if (moulin[0] == caseJoue){

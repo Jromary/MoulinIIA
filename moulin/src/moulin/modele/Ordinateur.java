@@ -10,11 +10,16 @@ public class Ordinateur implements Observer {
     private Board boardJeu;
     private int numeroJoueur;
     //private HashMap<Board, Double> sauvegarde;
+    //utilisation de concurenthashmap pour l'utilisation des thread et eviter les acces concurentiel
     private ConcurrentHashMap<Board, Double> sauvegardebis;
 
     private ArrayList<Thread> threads;
 
-
+    /**
+     * constructeur
+     * @param boardJeu
+     * @param numeroJoueur
+     */
     public Ordinateur(Board boardJeu, int numeroJoueur){
         this.boardJeu = boardJeu;
         boardJeu.addObserver(this);
@@ -23,12 +28,19 @@ public class Ordinateur implements Observer {
         sauvegardebis = new ConcurrentHashMap<>();
     }
 
+    /**
+     * retourne le meilleur mouvement
+     * @param board
+     * @param depth
+     * @return
+     */
     public Move getBestMove(Board board, int depth){
         //variables
         final Board[] new_Board = new Board[1];
         double score, score_max;
         ArrayList<Move> successeurs;
         Move next_move = null;
+        ArrayList<Move> nextPotentiel = new ArrayList<>();
         //
 
         HashMap<Double, Move> lesEvals = new HashMap<>();
@@ -39,6 +51,7 @@ public class Ordinateur implements Observer {
         successeurs = board.getMoves();
         score_max = -Double.MAX_VALUE;
         for (Move move : successeurs) {
+            // lance un thread pour allez plus vite
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -51,6 +64,7 @@ public class Ordinateur implements Observer {
             thread.start();
             threads.add(thread);
         }
+        // on attend que tout les thread est finie, comme ça on a vue tt les etats
         for (Thread t :
                 threads) {
             try {
@@ -59,43 +73,27 @@ public class Ordinateur implements Observer {
                 e.printStackTrace();
             }
         }
-
+        // on coupe les thread, ils ne servent plus a rien
+        for (Thread t :
+                threads) {
+            t.interrupt();
+        }
+        threads = new ArrayList<>();
+        //on reccup les moves
         for (Map.Entry eval : lesEvals.entrySet()) {
             if ((Double)eval.getKey() >= score_max){
-                //System.out.println("\t" + (Double)eval.getKey());
-                //System.out.println("Best move pour le joueur ordinateur avec un score de " + score +" :\n" + move);
-                next_move = (Move)eval.getValue();
+                if ((Double)eval.getKey() > score_max){
+                    nextPotentiel = new ArrayList<>();
+                }
+                nextPotentiel.add((Move)eval.getValue());
+                //next_move = (Move)eval.getValue();
                 score_max = (Double)eval.getKey();
             }
         }
 
 
-        return next_move;
-        
-/**
-
-        //variables
-        Board new_Board;
-        double score, score_max;
-        ArrayList<Move> successeurs;
-        Move next_move = null;
-        //
-        successeurs = board.getMoves();
-        score_max = -Double.MAX_VALUE;
-        for (Move move : successeurs) {
-            new_Board = new Board(board.currentPlayer(), Plateau.getInstance(), board.nbTokenWhiteLeftOnBoard, board.nbTokenBlackLeftOnBoard, board.nbTokenWhiteLeftToPlay, board.nbTokenBlackLeftToPlay, board.getPosition(), this.numeroJoueur);
-            new_Board.makeMove(move);
-            score = eval_alpha_beta(new_Board, depth, -Double.MAX_VALUE, Double.MAX_VALUE);
-            System.out.println(score);
-            if (score >= score_max){
-                System.out.println("\t" + score);
-                //System.out.println("Best move pour le joueur ordinateur avec un score de " + score +" :\n" + move);
-                next_move = move;
-                score_max = score;
-            }
-        }
-        return next_move;
- **/
+        //return next_move;
+        return nextPotentiel.get((int) (Math.random()*nextPotentiel.size()));// on sort un move aleatoire si on a le meme score pour plusieur
     }
 
     private double eval_alpha_beta(Board b, int depth, double alpha, double beta){
@@ -113,7 +111,7 @@ public class Ordinateur implements Observer {
         }
         if (depth == 0) {
             //System.out.println("\tmax depth reached: " + b.evaluate());
-            return b.evaluate();//TODO: ajouter le numero du joueur ici
+            return b.evaluate(this.numeroJoueur);
         }
         successeurs = b.getMoves();
         if (b.currentPlayer() == this.numeroJoueur){

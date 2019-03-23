@@ -151,7 +151,7 @@ public class BoardControler implements Observer {
             }
         }
 
-        if (board.currentPlayer() == board.joueurOdinateur){
+        if (!(board.ordinateur == null) && board.currentPlayer() == board.joueurOdinateur){
             deactivatePlayer(1);
             deactivatePlayer(0);
             deactivateEmpty();
